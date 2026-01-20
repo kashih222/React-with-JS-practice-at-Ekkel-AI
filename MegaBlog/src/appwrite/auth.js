@@ -2,11 +2,9 @@ import conf from "../conf/conf";
 import { Client, Account, ID } from "appwrite";
 
 export class AuthService {
-  client;
-  account;
-
   constructor() {
     this.client = new Client();
+    this.account = null;
 
     this.client
       .setEndpoint(conf.appwriteUrl)
@@ -26,6 +24,7 @@ export class AuthService {
 
       return userAccount;
     } catch (error) {
+      console.error("Appwrite service :: createAccount :: error", error);
       throw error;
     }
   }
@@ -34,6 +33,7 @@ export class AuthService {
     try {
       return await this.account.createEmailPasswordSession(email, password);
     } catch (error) {
+      console.error("Appwrite service :: login :: error", error);
       throw error;
     }
   }

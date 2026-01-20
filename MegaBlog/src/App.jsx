@@ -23,7 +23,7 @@ function App() {
       .finally(() => setLoading(false));
   }, [dispatch]);
 
-  return !loading ? (
+  return !loading ? ( 
     <div className="h-screen w-full">
       <Header />
       <main>
