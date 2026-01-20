@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Outlet } from "react-router-dom";
 import authService from "./appwrite/auth";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
@@ -27,7 +28,7 @@ function App() {
     <div className="h-screen w-full">
       <Header />
       <main>
-        {/* <Outlet /> */}
+        <Outlet />
       </main>
       <Footer />
     </div>

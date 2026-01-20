@@ -4,7 +4,7 @@ import { Controller } from "react-hook-form";
 
 export default function RTE({ name, control, label}) {
   const editorRef = useRef(null);
-  
+  const TINY_API_KEY = import.meta.env.VITE_TINY_API_KEY;
 
   return (
     <div className="w-full">
@@ -14,7 +14,7 @@ export default function RTE({ name, control, label}) {
         control={control}
         render={({ field: { onChange } }) => (
           <Editor
-            apiKey="no-api-key"
+            apiKey={TINY_API_KEY}
             onInit={(_evt, editor) => (editorRef.current = editor)}
             initialValue=""
             init={{

@@ -60,9 +60,10 @@ const Signup = () => {
           </p>
         )}
 
-        <form onSubmit={handleSubmit(onCreate)} className="space-y-4">
+        <form onSubmit={handleSubmit(onCreate)} className="space-y-4 flex flex-col items-center justify-center ">
           {/* Name */}
           <Input
+          className="w-full"
             label="Full Name"
             type="text"
             placeholder="Enter your name"
@@ -77,7 +78,7 @@ const Signup = () => {
           />
 
           {/* Email */}
-          <Input
+          <Input className="w-full"
             label="Email"
             type="email"
             placeholder="Enter your email"
@@ -93,6 +94,7 @@ const Signup = () => {
 
           {/* Password */}
           <Input
+          className="w-full"
             label="Password"
             type="password"
             placeholder="Enter your password"
@@ -108,6 +110,7 @@ const Signup = () => {
 
           {/* Confirm Password */}
           <Input
+          className="w-full"
             label="Confirm Password"
             type="password"
             placeholder="Confirm your password"

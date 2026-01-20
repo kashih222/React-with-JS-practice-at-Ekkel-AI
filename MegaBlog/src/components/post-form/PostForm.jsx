@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useForm, Watch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Button from "../Button";
 import RTE from "../RTE";
 import Input from "../Input";
@@ -87,7 +87,7 @@ const PostForm = ({ post }) => {
   }, []);
 
   React.useEffect(() => {
-    const subscription = Watch ((value, { name }) => {
+    const subscription = watch((value, { name }) => {
       if (name === "title") {
         setValue("slug", slugTransform(value.title), {
           shouldValidate: true,
@@ -99,10 +99,16 @@ const PostForm = ({ post }) => {
   }, [watch, slugTransform, setValue]);
 
   return (
-    <form
+    <div className="w-full py-8">
+      <form
       onSubmit={handleSubmit(submit)}
-      className="max-w-3xl mx-auto space-y-6"
+      className="max-w-3xl mx-auto space-y-6 flex flex-col flex-wrap"
     >
+     <div>
+       <h1 className="text-xl mb-4 uppercase">
+        Content
+      </h1>
+     </div>
       <Input
         label="Title"
         placeholder="Enter post title"
@@ -141,6 +147,7 @@ const PostForm = ({ post }) => {
         {post ? "Update Post" : "Create Post"}
       </Button>
     </form>
+    </div>
   );
 };
 

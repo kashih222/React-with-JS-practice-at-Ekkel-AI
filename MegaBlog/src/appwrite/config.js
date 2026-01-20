@@ -2,79 +2,84 @@ import conf from "../conf/conf";
 import { ID, Databases, Storage, Query, Client } from "appwrite";
 
 export class Service {
-  client = new Client();
+  client;
   databases;
   bucket;
 
   constructor() {
-    this.client
-      .setEndpoint(conf.appwriteUrl)
-      .setEndpoint(conf.appwriteProjectId);
+    this.client = new Client()
+      .setEndpoint(conf.appwriteUrl)       
+      .setProject(conf.appwriteProjectId); 
+
     this.databases = new Databases(this.client);
     this.bucket = new Storage(this.client);
   }
 
-  // Post related Logic
-  async createPost({ tittle, slug, content, featuredImage, status, userId }) {
+  // ---------------- Post related Logic ----------------
+
+  async createPost({ title, slug, content, featuredImage, status, userId }) {
     try {
-      await this.databases.createDocument(
+      return await this.databases.createDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
-        slug,
+        ID.unique(),
         {
-          tittle,
+          tittle: title,
+          slug,
           content,
-          featuredImage,
+          featuredimage: featuredImage,
           status,
           userId,
         }
       );
     } catch (error) {
-      console.log("Appwrite service :: createpost :: error", error);
+      console.error("Appwrite service :: createPost :: error", error);
+      return null;
     }
   }
 
-  async updatePost(slug, { tittle, content, featuredImage, status }) {
+  async updatePost(id, { title, content, featuredImage, status }) {
     try {
       return await this.databases.updateDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
-        slug,
+        id,
         {
-          tittle,
+          tittle: title,
           content,
-          featuredImage,
+          featuredimage: featuredImage,
           status,
         }
       );
     } catch (error) {
-      console.log("Appwrite service :: updatepost :: error", error);
+      console.error("Appwrite service :: updatePost :: error", error);
+      return null;
     }
   }
 
-  async deletePost(slug, { tittle, content, featuredImage, status }) {
+  async deletePost(id) {
     try {
-      await this.databases.deleteDocument(
+      return await this.databases.deleteDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
-        slug
+        id
       );
     } catch (error) {
-      console.log("Appwrite service :: deletepost :: error", error);
+      console.error("Appwrite service :: deletePost :: error", error);
       return false;
     }
   }
 
-  async getPost(slug) {
+  async getPost(id) {
     try {
       return await this.databases.getDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
-        slug
+        id
       );
     } catch (error) {
-      console.log("Appwrite service :: getpost :: error", error);
-      return false;
+      console.error("Appwrite service :: getPost :: error", error);
+      return null;
     }
   }
 
@@ -86,51 +91,61 @@ export class Service {
         queries
       );
     } catch (error) {
-      console.log("Appwrite service :: allpost :: error", error);
-      return false;
+      if (error.code !== 401) {
+          console.error("Appwrite service :: getPosts :: error", error);
+      }
+      return [];
     }
   }
 
-  //File Related Logic
+  async getPostBySlug(slug) {
+  try {
+    const res = await this.databases.listDocuments(
+      conf.appwriteDatabaseId,
+      conf.appwriteCollectionId,
+      [Query.equal("slug", slug)]
+    );
+
+    return res.documents[0] || null;
+  } catch (error) {
+    console.log("Appwrite service :: getPostBySlug :: error", error);
+    return null;
+  }
+}
+  //  File Related Logic 
 
   async uploadFile(file) {
     try {
-      return await this.bucket.createFile(
-        conf.appwriteBucketId,
-        ID.unique(),
-        file
-      );
+      return await this.bucket.createFile(conf.appwriteBucketId, ID.unique(), file);
     } catch (error) {
-      console.log("Appwrite service :: uploadfile :: error", error);
-      return false;
+      console.error("Appwrite service :: uploadFile :: error", error);
+      return null;
     }
   }
 
   async deleteFile(fileId) {
     try {
-      await this.bucket.deleteFile(
-        conf.appwriteBucketId,
-         fileId
-        );
-      return true;
+      return await this.bucket.deleteFile(conf.appwriteBucketId, fileId);
     } catch (error) {
-      console.log("Appwrite service :: deletefile :: error", error);
+      console.error("Appwrite service :: deleteFile :: error", error);
       return false;
     }
   }
 
-  async getFilePreview(fileId) {
-    try {
-      await this.bucket.getFilePreview(
-        conf.appwriteBucketId, 
-        fileId
+ getFilePreview(fileId) {
+  try {
+    return this.bucket.getFilePreview(
+      conf.appwriteBucketId,
+      fileId
     );
-    } catch (error) {
-      console.log("Appwrite service :: getfilepreview :: error", error);
-      return false;
-    }
+  } catch (error) {
+    console.error("Appwrite service :: getFilePreview :: error", error);
+    return null;
   }
 }
 
+}
+
+
 const service = new Service();
-export default Service;
+export default service;

@@ -51,9 +51,10 @@ const Login = () => {
           </p>
         )}
 
-        <form onSubmit={handleSubmit(onLogin)} className="space-y-4">
+        <form onSubmit={handleSubmit(onLogin)} className="space-y-4 flex flex-col w-full items-center justify-center">
           {/* Email */}
           <Input
+          className="w-full"
             label="Email"
             type="email"
             placeholder="Enter your email"
@@ -69,6 +70,7 @@ const Login = () => {
 
           {/* Password */}
           <Input
+          className="w-full"
             label="Password"
             type="password"
             placeholder="Enter your password"
