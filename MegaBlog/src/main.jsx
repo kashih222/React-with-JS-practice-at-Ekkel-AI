@@ -14,6 +14,8 @@ import AddPostPage from "./components/pages/AddPostPage.jsx";
 import EditPostPage from "./components/pages/EditPostPage.jsx";
 import PostPage from "./components/pages/PostPage.jsx";
 import Protected from "./components/AuthLayout.jsx";
+import {Toaster} from "react-hot-toast";
+import AboutPage from "./components/pages/Aboutpage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +39,14 @@ const router = createBrowserRouter([
         element: (
           <Protected authentication={false}>
             <SignupPage />
+          </Protected>
+        ),
+      },
+       {
+        path: "/about",
+        element: (
+          <Protected authentication>
+            <AboutPage />
           </Protected>
         ),
       },
@@ -80,6 +90,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
       <RouterProvider router={router} />
+      <Toaster/>
     </Provider>
   </StrictMode>
 );

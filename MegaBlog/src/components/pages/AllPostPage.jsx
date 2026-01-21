@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import appwriteService from "../../appwrite/config";
 import PostCard from "../PostCard";
 import Container from "../container/Container";
+import toast from "react-hot-toast";
+import MEGABLOG from "../../assets/Mega.png"
 
 const AllPostPage = () => {
   const [posts, setPosts] = useState([]);
+
+   useEffect(() => {
+    document.title = "All Post - MegaBlog";
+  }, []);
+
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -14,31 +21,34 @@ const AllPostPage = () => {
           setPosts(response.documents);
         }
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        toast.error("Error fetching posts:", error);
       }
     };
 
     fetchPosts();
   }, []);
 
-  console.log("ALL POSTS:", posts);
 
   return (
-    <div className="w-full p-4">
-      <Container>
-        <div className="flex flex-wrap gap-6">
-          {posts.length > 0 ? (
-            posts.map((post) => (
-              <div key={post.$id} className="w-full sm:w-1/2 lg:w-1/3">
-                <PostCard post={post} />
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No posts found.</p>
-          )}
-        </div>
-      </Container>
+    <Container>
+    <div className="w-full py-8 relative">
+       <div className=" absolute w-full h-screen flex items-center justify-center -z-40">
+                    <img src={MEGABLOG}  alt={MEGABLOG} className="mb-40 " />
+      
+            </div>
+      
+        {posts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <PostCard key={post.$id} {...post} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 text-center">No posts found.</p>
+        )}
+      
     </div>
+    </Container>
   );
 };
 

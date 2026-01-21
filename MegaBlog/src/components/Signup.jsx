@@ -6,6 +6,7 @@ import { login as loginAction } from "../store/features/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "./Button";
 import Input from "./Input";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ const Signup = () => {
         }
       }
     } catch (err) {
-      console.error("Signup error:", err);
+      toast.error("Signup error:", err);
       setError(err?.message || "Signup failed. Try again.");
     }
   };
@@ -125,8 +126,8 @@ const Signup = () => {
           {/* Submit Button */}
           <Button
             type="submit"
-            bgColor="bg-orange-700"
-            className="w-full"
+            bgColor="bg-yellow-400"
+            className="w-full text-black"
             loading={isSubmitting}
           >
             Sign Up

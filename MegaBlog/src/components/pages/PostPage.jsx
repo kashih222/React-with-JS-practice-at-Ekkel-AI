@@ -4,6 +4,7 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import Container from "../container/Container";
 import Button from "../Button";
 import appwriteService from "../../appwrite/config";
+import toast from "react-hot-toast";
 
 const PostPage = () => {
   const [post, setPost] = useState(null);
@@ -11,24 +12,34 @@ const PostPage = () => {
   const navigate = useNavigate();
 
   const userData = useSelector((state) => state.auth.userData);
+  const authStatus = useSelector((state) => state.auth.status);
 
   const isAuthor = post && userData ? post.userId === userData.$id : false;
 
+  // Fetch post whenever slug or userData changes
   useEffect(() => {
-    if (!slug) return;
+    if (!slug || !authStatus || !userData) return;
 
     const fetchPost = async () => {
-      const fetchedPost = await appwriteService.getPostBySlug(slug);
-
-      if (fetchedPost) {
-        setPost(fetchedPost);
-      } else {
+      try {
+        const fetchedPost = await appwriteService.getPostBySlug(slug);
+        if (fetchedPost) {
+          setPost(fetchedPost);
+        } else {
+          navigate("/");
+        }
+      } catch (err) {
+        console.error("Error fetching post:", err);
         navigate("/");
       }
     };
 
     fetchPost();
-  }, [slug, navigate]);
+  }, [slug, userData, authStatus, navigate]);
+
+  useEffect(() => {
+    document.title = post ? `${post.tittle} - MegaBlog` : "Post - MegaBlog";
+  }, [post]);
 
   const deletePost = async () => {
     if (!window.confirm("Are you sure you want to delete this post?")) return;
@@ -40,22 +51,31 @@ const PostPage = () => {
         await appwriteService.deleteFile(post.featuredimage);
       }
 
-      alert("Post deleted successfully!");
+      toast.success("Post deleted successfully!");
       navigate("/");
     } catch (err) {
       console.error("Error deleting post:", err);
-      alert("Failed to delete post.");
+      toast.error("Failed to delete post.");
     }
   };
 
-  if (!post) return <div className="p-6 text-center">Loading post...</div>;
+  if (!post) {
+    return (
+      <div className="p-6 text-center">
+        <Container>
+          <h1 className="text-xl text-gray-500">Loading post...</h1>
+        </Container>
+      </div>
+    );
+  }
 
   const imageUrl = post.featuredimage
     ? appwriteService.getFilePreview(post.featuredimage)
     : null;
 
   return (
-    <div className="p-4">
+    <Container>
+      <div className="p-4">
       <Container>
         <div className="w-full h-150 flex justify-center mb-4 relative border rounded-xl p-2">
           {imageUrl && (
@@ -79,9 +99,7 @@ const PostPage = () => {
           )}
         </div>
 
-        <h1 className="text-3xl font-bold mb-4 text-center">
-          {post.tittle}
-        </h1>
+        <h1 className="text-3xl font-bold mb-4 text-center">{post.tittle}</h1>
 
         <div
           dangerouslySetInnerHTML={{ __html: post.content }}
@@ -89,6 +107,7 @@ const PostPage = () => {
         />
       </Container>
     </div>
+    </Container>
   );
 };
 

@@ -1,17 +1,18 @@
 import React from 'react'
 import { Link } from "react-router-dom"
+import MEGABLOG from "../../assets/Mega.png"
 
 const Footer = () => {
   return (
-    <div>
-         <footer className="bg-white border-y">
+    <div className='font-mono'>
+         <footer className="bg-white border-y  w-full">
             <div className="mx-auto w-full max-w-7xl p-4 py-6 ">
                 <div className="md:flex md:justify-between">
                     <div className="mb-6 md:mb-0">
                         <Link to="/" className="flex items-center">
                             <img
-                                src="https://alexharkness.com/wp-content/uploads/2020/06/logo-2.png"
-                                className="mr-3 h-16"
+                                src={MEGABLOG}
+                                className="mr-3 h-28 w-28"
                                 alt="Logo"
                             />
                         </Link>

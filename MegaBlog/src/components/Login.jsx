@@ -6,6 +6,7 @@ import { login as loginAction } from "../store/features/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "./Button";
 import Input from "./Input";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const Login = () => {
         navigate("/");
       }
     } catch (err) {
-      console.error("Login error:", err);
+      toast.error("Login error:", err);
       setError("Invalid email or password");
     }
   };
@@ -87,7 +88,7 @@ const Login = () => {
           {/* Submit Button */}
           <Button
             type="submit"
-            bgColor="bg-orange-700"
+            bgColor="bg-yellow-400"
             className="w-full"
             loading={isSubmitting}
           >

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../Button";
 import RTE from "../RTE";
@@ -6,6 +6,7 @@ import Input from "../Input";
 import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const PostForm = ({ post }) => {
   const {
@@ -17,7 +18,7 @@ const PostForm = ({ post }) => {
     getValues,
   } = useForm({
     defaultValues: {
-      title: post?.title || "",
+      tittle: post?.tittle || "",
       slug: post?.slug || "",
       content: post?.content || "",
       status: post?.status || "active",
@@ -27,55 +28,71 @@ const PostForm = ({ post }) => {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
 
-  const submit = async (data) => {
-    try {
-      if (post) {
-        // Update post
-        let file = null;
-
-        if (data.image && data.image[0]) {
-          file = await appwriteService.uploadFile(data.image[0]);
-          if (post.featuredImage) {
-            await appwriteService.deleteFile(post.featuredImage);
-          }
-        }
-
-        const dbPost = await appwriteService.updatePost(post.$id, {
-          ...data,
-          featuredImage: file ? file.$id : post.featuredImage,
-        });
-
-        if (dbPost) {
-          navigate(`/post/${dbPost.$id}`);
-        }
-      } else {
-        // Create post
-        const file = data.image?.[0]
-          ? await appwriteService.uploadFile(data.image[0])
-          : null;
-
-        if (!file) {
-          alert("Featured image is required");
-          return;
-        }
-
-        const dbPost = await appwriteService.createPost({
-          ...data,
-          featuredImage: file.$id,
-          userId: userData.$id,
-        });
-
-        if (dbPost) {
-          navigate(`/post/${dbPost.$id}`);
-        }
-      }
-    } catch (error) {
-      console.error("Post submit error:", error);
+  
+const submit = async (data) => {
+  try {
+    if (!userData) {
+      toast("User not logged in");
+      return;
     }
-  };
 
-  // Auto-generate slug from title
-  const slugTransform = useCallback((value) => {
+    let fileId = post?.featuredimage || null;
+
+    // Upload new image if selected
+    if (data.image && data.image[0]) {
+      const uploadedFile = await appwriteService.uploadFile(data.image[0]);
+
+      if (!uploadedFile || !uploadedFile.$id) {
+        toast("Image upload failed");
+        return;
+      }
+
+      
+      if (post?.featuredimage) {
+        await appwriteService.deleteFile(post.featuredimage);
+      }
+
+      fileId = uploadedFile.$id;
+    }
+
+    const postData = {
+      tittle: data.tittle,
+      slug: data.slug,
+      content: data.content,
+      status: data.status,
+      featuredimage: fileId,
+      userId: userData.$id,
+    };
+
+    let response;
+
+    if (post) {
+      // UPDATE POST
+      response = await appwriteService.updatePost(post.$id, postData);
+    } else {
+      // CREATE POST
+      if (!fileId) {
+        toast("Featured image is required");
+        return;
+      }
+
+      response = await appwriteService.createPost(postData);
+    }
+
+
+    if (response && response.slug) {
+      navigate(`/post/${response.slug}`);  
+    } else {
+      toast("Post saved but slug missing");
+    }
+
+  } catch (error) {
+    console.error("Post submit error:", error);
+    toast("Failed to submit post");
+  }
+};
+
+const slugTransform = useCallback((value) => {
     if (value && typeof value === "string") {
       return value
         .trim()
@@ -86,10 +103,10 @@ const PostForm = ({ post }) => {
     return "";
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const subscription = watch((value, { name }) => {
-      if (name === "title") {
-        setValue("slug", slugTransform(value.title), {
+      if (name === "tittle") {
+        setValue("slug", slugTransform(value.tittle), {
           shouldValidate: true,
         });
       }
@@ -101,52 +118,49 @@ const PostForm = ({ post }) => {
   return (
     <div className="w-full py-8">
       <form
-      onSubmit={handleSubmit(submit)}
-      className="max-w-3xl mx-auto space-y-6 flex flex-col flex-wrap"
-    >
-     <div>
-       <h1 className="text-xl mb-4 uppercase">
-        Content
-      </h1>
-     </div>
-      <Input
-        label="Title"
-        placeholder="Enter post title"
-        {...register("title", { required: true })}
-      />
-
-      <Input
-        label="Slug"
-        placeholder="post-slug"
-        {...register("slug", { required: true })}
-      />
-
-      <RTE
-        label="Content"
-        name="content"
-        control={control}
-        defaultValue={getValues("content")}
-      />
-
-      <Input
-        label="Featured Image"
-        type="file"
-        accept="image/png, image/jpg, image/jpeg, image/webp"
-        {...register("image", { required: !post })}
-      />
-
-      <select
-        className="w-full border rounded-lg px-3 py-2"
-        {...register("status", { required: true })}
+        onSubmit={handleSubmit(submit)}
+        className="max-w-3xl mx-auto space-y-6 flex flex-col flex-wrap"
       >
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-      </select>
+        <h1 className="text-xl mb-4 uppercase">Content</h1>
 
-      <Button type="submit" className="w-full">
-        {post ? "Update Post" : "Create Post"}
-      </Button>
-    </form>
+        <Input
+          label="Title"
+          placeholder="Enter post title"
+          {...register("tittle", { required: true })}
+        />
+
+        <Input
+          label="Slug"
+          placeholder="post-slug"
+          {...register("slug", { required: true })}
+        />
+
+        <RTE
+          label="Content"
+          name="content"
+          control={control}
+          defaultValue={getValues("content")}
+        />
+
+        <Input
+          label="Featured Image"
+          type="file"
+          accept="image/png, image/jpg, image/jpeg, image/webp"
+          {...register("image", { required: !post })}
+        />
+
+        <select
+          className="w-full border rounded-lg px-3 py-2"
+          {...register("status", { required: true })}
+        >
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+
+        <Button type="submit" className="w-full">
+          {post ? "Update Post" : "Create Post"}
+        </Button>
+      </form>
     </div>
   );
 };

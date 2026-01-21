@@ -3,27 +3,38 @@ import { Link } from "react-router-dom";
 import appwriteService from "../appwrite/config";
 
 const PostCard = ({
-  $id,
+  
   tittle,
   featuredimage,
   content,
   $createdAt,
   slug,
 }) => {
+
+  // Safely generate image URL (prevents Missing fileId error)
+  const imageUrl = featuredimage
+    ? appwriteService.getFilePreview(featuredimage)
+    : null;
+
   return (
-    <Link to={`/post/${$id}`}>
-      <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-        <img
-          src={appwriteService.getFilePreview(featuredimage)}
-          alt={tittle}
-          className="w-full h-48 object-cover"
-        />
+    <Link to={`/post/${slug}`}>
+      <div className="bg-white -z-40 w-full h-103 shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+
+       
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt={tittle}
+            className="w-full h-48 object-cover"
+          />
+        )}
 
         <div className="p-4">
           <h2 className="text-xl font-semibold mb-2">{tittle}</h2>
 
+       
           <div
-            className="text-gray-700 mb-4 prose max-w-none"
+            className="text-gray-700 mb-4 w-full h-18 overflow-hidden prose max-w-none line-clamp-3"
             dangerouslySetInnerHTML={{ __html: content }}
           />
 
@@ -33,13 +44,10 @@ const PostCard = ({
             </span>
           </div>
 
-          <Link
-            to={`/post/${slug}`}
-            className="inline-block mt-4 text-orange-700 font-medium hover:underline"
-          >
+      
+          <span className="inline-block mt-4 text-orange-700 font-medium hover:underline">
             Read More
-          </Link>
-
+          </span>
         </div>
       </div>
     </Link>
