@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import authService from "../appwrite/auth";
 import { logOut } from "../store/features/authSlice";
+import toast from "react-hot-toast";
 
 const LogoutBtn = () => {
     const dispatch = useDispatch()
@@ -10,6 +11,7 @@ const LogoutBtn = () => {
     const logOutHandler = ()=>{
         authService.logout().then(()=>{
             dispatch(logOut())
+            toast.success('Logout Sucessfully.')
         })
     }
 

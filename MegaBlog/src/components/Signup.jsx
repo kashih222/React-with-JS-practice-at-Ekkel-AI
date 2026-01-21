@@ -27,6 +27,7 @@ const Signup = () => {
         email: data.email,
         password: data.password,
         name: data.name,
+        
       });
 
       if (userAccount) {
@@ -39,6 +40,7 @@ const Signup = () => {
         if (session) {
           const user = await authService.getCurrentUser();
           dispatch(loginAction(user));
+          toast.success('SignUp Sucessfully.')
           navigate("/");
         }
       }

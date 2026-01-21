@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Watch } from "react-hook-form";
 import Button from "../Button";
 import RTE from "../RTE";
 import Input from "../Input";
@@ -32,18 +32,17 @@ const PostForm = ({ post }) => {
 const submit = async (data) => {
   try {
     if (!userData) {
-      toast("User not logged in");
+      toast.error("User not logged in");
       return;
     }
 
     let fileId = post?.featuredimage || null;
 
-    // Upload new image if selected
     if (data.image && data.image[0]) {
       const uploadedFile = await appwriteService.uploadFile(data.image[0]);
 
       if (!uploadedFile || !uploadedFile.$id) {
-        toast("Image upload failed");
+        toast.error("Image upload failed");
         return;
       }
 
@@ -69,26 +68,28 @@ const submit = async (data) => {
     if (post) {
       // UPDATE POST
       response = await appwriteService.updatePost(post.$id, postData);
+      toast.success("Post Updated Sucessfully")
     } else {
       // CREATE POST
       if (!fileId) {
-        toast("Featured image is required");
+        toast.error("Featured image is required");
         return;
       }
 
       response = await appwriteService.createPost(postData);
+      toast.success('Blog Added Sucessfully')
     }
 
 
     if (response && response.slug) {
       navigate(`/post/${response.slug}`);  
     } else {
-      toast("Post saved but slug missing");
+      toast.error("Post saved but slug missing");
     }
 
   } catch (error) {
     console.error("Post submit error:", error);
-    toast("Failed to submit post");
+    toast.error("Failed to submit post");
   }
 };
 

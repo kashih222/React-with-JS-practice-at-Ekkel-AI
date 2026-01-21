@@ -16,7 +16,6 @@ const PostPage = () => {
 
   const isAuthor = post && userData ? post.userId === userData.$id : false;
 
-  // Fetch post whenever slug or userData changes
   useEffect(() => {
     if (!slug || !authStatus || !userData) return;
 
@@ -61,9 +60,9 @@ const PostPage = () => {
 
   if (!post) {
     return (
-      <div className="p-6 text-center">
+      <div className="p-6 text-center mt-18 flex items-center  justify-center h-18 w-full">
         <Container>
-          <h1 className="text-xl text-gray-500">Loading post...</h1>
+          <h1 className="text-xl text-gray-500 w-full h-80 flex items-center justify-center ">Loading post...</h1>
         </Container>
       </div>
     );
@@ -75,9 +74,9 @@ const PostPage = () => {
 
   return (
     <Container>
-      <div className="p-4">
-      <Container>
-        <div className="w-full h-150 flex justify-center mb-4 relative border rounded-xl p-2">
+      <div className="p-4 pb-47 pt-20">
+      
+        <div className="flex justify-center mb-4 relative border rounded-xl p-2">
           {imageUrl && (
             <img
               src={imageUrl}
@@ -89,10 +88,10 @@ const PostPage = () => {
           {isAuthor && (
             <div className="absolute right-6 top-6 flex space-x-3">
               <Link to={`/edit-post/${post.slug}`}>
-                <Button bgColor="bg-green-500">Edit</Button>
+                <Button bgColor="bg-green-500" className="">Edit</Button>
               </Link>
 
-              <Button bgColor="bg-red-500" onClick={deletePost}>
+              <Button bgColor="bg-red-500" className="" onClick={deletePost}>
                 Delete
               </Button>
             </div>
@@ -105,7 +104,7 @@ const PostPage = () => {
           dangerouslySetInnerHTML={{ __html: post.content }}
           className="prose max-w-full mx-auto text-center"
         />
-      </Container>
+     
     </div>
     </Container>
   );

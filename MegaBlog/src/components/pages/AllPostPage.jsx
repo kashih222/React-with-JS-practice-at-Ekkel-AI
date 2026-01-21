@@ -44,7 +44,7 @@ const AllPostPage = () => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 text-center">No posts found.</p>
+          <p className="text-gray-500  mt-18 flex items-center  justify-center h-18 w-full">No posts found....</p>
         )}
       
     </div>

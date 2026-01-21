@@ -41,9 +41,9 @@ const HomePage = () => {
 
   if (loading) {
     return (
-      <div className="w-full mt-4 text-center">
+      <div className="w-full h-80 text-center flex items-center justify-center">
         <Container>
-          <h1 className="text-xl text-gray-500">Loading posts...</h1>
+          <h1 className="text-xl text-gray-500 ">Loading posts...</h1>
         </Container>
       </div>
     );
@@ -66,7 +66,7 @@ const HomePage = () => {
       <Container>
         <div className="w-full mt-4 text-center">
         <Container>
-          <h1 className="text-xl text-gray-500">
+          <h1 className="text-xl text-gray-500 w-full h-80 flex items-center justify-center">
             You have not created any posts yet.
           </h1>
         </Container>

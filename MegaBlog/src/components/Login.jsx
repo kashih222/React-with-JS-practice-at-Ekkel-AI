@@ -31,6 +31,7 @@ const Login = () => {
       if (session) {
         const user = await authService.getCurrentUser();
         dispatch(loginAction(user));
+        toast.success("Login Sucessfully.")
         navigate("/");
       }
     } catch (err) {
