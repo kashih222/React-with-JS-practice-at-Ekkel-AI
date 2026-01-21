@@ -43,7 +43,7 @@ const HomePage = () => {
     return (
       <div className="w-full h-80 text-center flex items-center justify-center">
         <Container>
-          <h1 className="text-xl text-gray-500 ">Loading posts...</h1>
+            <div class="loader"></div>
         </Container>
       </div>
     );

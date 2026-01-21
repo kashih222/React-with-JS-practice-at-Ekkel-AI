@@ -60,9 +60,9 @@ const PostPage = () => {
 
   if (!post) {
     return (
-      <div className="p-6 text-center mt-18 flex items-center  justify-center h-18 w-full">
+      <div className="p-6 text-center mt-18 flex items-center  justify-center h-80 w-full">
         <Container>
-          <h1 className="text-xl text-gray-500 w-full h-80 flex items-center justify-center ">Loading post...</h1>
+          <div class="loader"></div>
         </Container>
       </div>
     );

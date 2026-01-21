@@ -18,8 +18,8 @@ export default function Protected({ children, authentication = true }) {
 
   if (authStatus === undefined || authStatus === null) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <h1 className="text-lg font-semibold">Loading...</h1>
+      <div className="flex min-h-screen w-full h-80  items-center justify-center">
+        <div class="loader"></div>
       </div>
     );
   }

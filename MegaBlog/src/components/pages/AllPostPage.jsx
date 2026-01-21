@@ -1,17 +1,16 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import appwriteService from "../../appwrite/config";
 import PostCard from "../PostCard";
 import Container from "../container/Container";
 import toast from "react-hot-toast";
-import MEGABLOG from "../../assets/Mega.png"
+import MEGABLOG from "../../assets/Mega.png";
 
 const AllPostPage = () => {
   const [posts, setPosts] = useState([]);
 
-   useEffect(() => {
+  useEffect(() => {
     document.title = "All Post - MegaBlog";
   }, []);
-
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -28,15 +27,13 @@ const AllPostPage = () => {
     fetchPosts();
   }, []);
 
-
   return (
     <Container>
-    <div className="w-full py-8 relative">
-       <div className=" absolute w-full h-screen flex items-center justify-center -z-40">
-                    <img src={MEGABLOG}  alt={MEGABLOG} className="mb-40 " />
-      
-            </div>
-      
+      <div className="w-full py-8 relative">
+        <div className=" absolute w-full h-screen flex items-center justify-center -z-40">
+          <img src={MEGABLOG} alt={MEGABLOG} className="mb-40 " />
+        </div>
+
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
@@ -44,10 +41,11 @@ const AllPostPage = () => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500  mt-18 flex items-center  justify-center h-18 w-full">No posts found....</p>
+          <div className="w-full h-80 flex flex-col items-center justify-center">
+            <div class="loader"></div>
+          </div>
         )}
-      
-    </div>
+      </div>
     </Container>
   );
 };
