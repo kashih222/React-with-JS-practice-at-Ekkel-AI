@@ -23,6 +23,7 @@ const PostForm = ({ post }) => {
       slug: post?.slug || "",
       content: post?.content || "",
       status: post?.status || "active",
+      author: post?.author || "",
     },
   });
 
@@ -68,6 +69,7 @@ const submit = async (data) => {
       status: data.status,
       featuredimage: fileId,
       userId: currentUser.$id,
+      author: data.author,
     };
 
     let response;
