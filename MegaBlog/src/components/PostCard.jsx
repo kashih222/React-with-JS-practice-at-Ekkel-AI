@@ -45,7 +45,7 @@ useEffect(() => {
 
           <div className="flex justify-between items-center text-sm text-gray-500">
             <span>
-              {$createdAt ? new Date($createdAt).toLocaleDateString() : ""}
+              {$createdAt ? new Date($createdAt).toLocaleString() : ""}
             </span>
           </div>
 

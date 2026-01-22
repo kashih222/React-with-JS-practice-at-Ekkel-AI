@@ -103,6 +103,10 @@ const PostPage = () => {
 
         <h1 className="text-3xl font-bold mb-4 text-center">{post.tittle}</h1>
 
+        <p className="text-center text-gray-500 text-sm mb-4">
+          Posted on: {new Date(post.$createdAt).toLocaleString()}
+        </p>
+
         <div
           dangerouslySetInnerHTML={{ __html: post.content }}
           className="prose max-w-full mx-auto text-center"
