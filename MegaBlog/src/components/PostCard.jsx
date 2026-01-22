@@ -26,7 +26,7 @@ useEffect(() => {
 
   return (
     <Link to={`/post/${slug}`}>
-      <div className="bg-white -z-40 w-full h-103 shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+      <div className="bg-white -z-40 w-full h-108 shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer">
 
         {imageUrl && (
           <img
@@ -56,7 +56,7 @@ useEffect(() => {
             <span>{author ? `By ${author}` : ""}</span>
           </div>
 
-          <span className="inline-block mt-4 text-orange-700 font-medium hover:underline">
+          <span className="inline-block mt-4  text-orange-700 font-medium hover:underline">
             Read More
           </span>
         </div>
