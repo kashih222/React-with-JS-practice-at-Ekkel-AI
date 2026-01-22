@@ -62,7 +62,7 @@ const PostPage = () => {
     return (
       <div className="p-6 text-center mt-18 flex items-center  justify-center h-80 w-full">
         <Container>
-          <div class="loader"></div>
+          <div className="loader"></div>
         </Container>
       </div>
     );

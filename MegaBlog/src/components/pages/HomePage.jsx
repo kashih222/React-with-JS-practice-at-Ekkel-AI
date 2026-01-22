@@ -43,7 +43,7 @@ const HomePage = () => {
     return (
       <div className="w-full h-80 text-center flex items-center justify-center">
         <Container>
-            <div class="loader"></div>
+            <div className="loader"></div>
         </Container>
       </div>
     );

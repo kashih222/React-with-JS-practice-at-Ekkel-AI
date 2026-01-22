@@ -24,7 +24,6 @@ export class AuthService {
       return userAccount;
     } catch (error) {
       console.error("Appwrite service :: createAccount :: error", error);
-      // If email already exists, handle gracefully
       if (error.message.includes("already exists")) {
         throw new Error("Email already registered. Please login instead.");
       }

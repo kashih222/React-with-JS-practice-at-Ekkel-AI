@@ -42,7 +42,7 @@ const AllPostPage = () => {
           </div>
         ) : (
           <div className="w-full h-80 flex flex-col items-center justify-center">
-            <div class="loader"></div>
+            <div className="loader"></div>
           </div>
         )}
       </div>
