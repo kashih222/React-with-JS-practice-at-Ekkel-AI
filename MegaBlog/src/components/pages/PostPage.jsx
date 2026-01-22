@@ -113,7 +113,7 @@ const PostPage = () => {
 
         <div
           dangerouslySetInnerHTML={{ __html: post.content }}
-          className="prose max-w-full mx-auto text-center"
+          className="prose max-w-full mx-auto "
         />
       </div>
       {showConfirm && (
