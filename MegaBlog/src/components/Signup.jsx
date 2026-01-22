@@ -13,11 +13,13 @@ const Signup = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm();
+ const {
+  register,
+  handleSubmit,
+  formState: { errors, isSubmitting, isValid, touchedFields },
+} = useForm({
+  mode: "onChange",
+});
 
   const onCreate = async (data) => {
     setError("");
@@ -27,7 +29,6 @@ const Signup = () => {
         email: data.email,
         password: data.password,
         name: data.name,
-        
       });
 
       if (userAccount) {
@@ -40,7 +41,7 @@ const Signup = () => {
         if (session) {
           const user = await authService.getCurrentUser();
           dispatch(loginAction(user));
-          toast.success('SignUp Sucessfully.')
+          toast.success("SignUp Sucessfully.");
           navigate("/");
         }
       }
@@ -63,10 +64,13 @@ const Signup = () => {
           </p>
         )}
 
-        <form onSubmit={handleSubmit(onCreate)} className="space-y-4 flex flex-col items-center justify-center ">
+        <form
+          onSubmit={handleSubmit(onCreate)}
+          className="space-y-4 flex flex-col items-center justify-center "
+        >
           {/* Name */}
           <Input
-          className="w-full"
+            className="w-full"
             label="Full Name"
             type="text"
             placeholder="Enter your name"
@@ -78,68 +82,75 @@ const Signup = () => {
               },
             })}
             error={errors.name?.message}
+  isValid={touchedFields.name && !errors.name}
           />
 
           {/* Email */}
-          <Input className="w-full"
+          <Input
+            className="w-full"
             label="Email"
             type="email"
             placeholder="Enter your email"
             {...register("email", {
-  required: "Email is required",
-  pattern: {
-    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    message: "Please enter a valid email address",
-  },
-})}
-            error={errors.email?.message}
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Please enter a valid email address",
+              },
+            })}
+              error={errors.email?.message}
+  isValid={touchedFields.email && !errors.email}
           />
 
           {/* Password */}
           <Input
-          className="w-full"
+            className="w-full"
             label="Password"
             type="password"
             placeholder="Enter your password"
             {...register("password", {
-  required: "Password is required",
-  minLength: {
-    value: 8,
-    message: "Password must be at least 8 characters",
-  },
-  maxLength: {
-    value: 20,
-    message: "Password must not exceed 20 characters",
-  },
-  pattern: {
-    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/,
-    message:
-      "Password must contain uppercase, lowercase, number & special character",
-  },
-})}
+              required: "Password is required",
+              minLength: {
+                value: 8,
+                message: "Password must be at least 8 characters",
+              },
+              maxLength: {
+                value: 20,
+                message: "Password must not exceed 20 characters",
+              },
+              pattern: {
+                value:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/,
+                message:
+                  "Password must contain uppercase, lowercase, number & special character",
+              },
+            })}
             error={errors.password?.message}
+  isValid={touchedFields.password && !errors.password}
           />
 
           {/* Confirm Password */}
           <Input
-          className="w-full"
+            className="w-full"
             label="Confirm Password"
             type="password"
             placeholder="Confirm your password"
             {...register("confirmPassword", {
-  required: "Confirm password is required",
-  validate: (value, formValues) =>
-    value === formValues.password || "Passwords do not match",
-})}
-            error={errors.confirmPassword?.message}
+              required: "Confirm password is required",
+              validate: (value, formValues) =>
+                value === formValues.password || "Passwords do not match",
+            })}
+             error={errors.confirmPassword?.message}
+  isValid={touchedFields.confirmPassword && !errors.confirmPassword}
           />
 
           {/* Submit Button */}
           <Button
             type="submit"
             bgColor="bg-yellow-400"
-            className="w-full text-black"
+            className="w-full text-black disabled:opacity-50 disabled:cursor-not-allowed"
             loading={isSubmitting}
+            disabled={!isValid || isSubmitting}
           >
             Sign Up
           </Button>
