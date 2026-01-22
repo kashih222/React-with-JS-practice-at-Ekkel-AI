@@ -5,13 +5,13 @@ import Container from "../container/Container";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
-const AllPostPage = () => {
+const MyPostPage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const userData = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
-    document.title = "All Post - MegaBlog";
+    document.title = "My Post - MegaBlog";
   }, []);
 
   useEffect(() => {
@@ -61,4 +61,4 @@ const AllPostPage = () => {
   );
 };
 
-export default AllPostPage;
+export default MyPostPage;

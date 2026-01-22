@@ -9,7 +9,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./components/pages/HomePage.jsx";
 import LoginPage from "./components/pages/LoginPage.jsx";
 import SignupPage from "./components/pages/SignupPage.jsx";
-import AllPostPage from "./components/pages/AllPostPage.jsx";
+import MyPostPage from "./components/pages/MyPostPage.jsx";
 import AddPostPage from "./components/pages/AddPostPage.jsx";
 import EditPostPage from "./components/pages/EditPostPage.jsx";
 import PostPage from "./components/pages/PostPage.jsx";
@@ -50,10 +50,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/all-posts",
+        path: "/my-posts",
         element: (
           <Protected authentication>
-            <AllPostPage />
+            <MyPostPage />
           </Protected>
         ),
       },

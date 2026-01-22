@@ -13,7 +13,7 @@ const Header = () => {
     { name: "Login", slug: "/login", active: !authStatus },
     { name: "Signup", slug: "/signup", active: !authStatus },
     { name: "AboutPage", slug: "/about", active: authStatus },
-    { name: "AllPost", slug: "/all-posts", active: authStatus },
+    { name: "MyPost", slug: "/my-posts", active: authStatus },
     { name: "AddPost", slug: "/add-post", active: authStatus },
   ];
 
