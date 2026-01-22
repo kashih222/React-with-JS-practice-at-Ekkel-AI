@@ -5,8 +5,8 @@ import authService from "./appwrite/auth";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import { login, logOut } from "./store/features/authSlice";
-import { Toaster } from "react-hot-toast";
-import FullLoader from "./components/FullLoader";
+import { Toaster } from "react-hot-toast"; 
+import FullLoader from "./components/FullLoader";   
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -26,14 +26,12 @@ function App() {
       .finally(() => setLoading(false));
   }, [dispatch]);
 
-  if (loading) return <div className="h-screen w-full flex items-center justify-center">
-    <FullLoader />
-  </div>;
+  if (loading) return <FullLoader />;
 
   return (
+    <div className="min-h-screen w-full flex flex-col relative">
     <div className="min-h-screen w-full flex flex-col">
-      <Header />
-
+      <Header/>
       <Toaster position="top-right" reverseOrder={false} />
 
       <main className="flex-1">
@@ -41,6 +39,7 @@ function App() {
       </main>
 
       <Footer />
+    </div>
     </div>
   );
 }

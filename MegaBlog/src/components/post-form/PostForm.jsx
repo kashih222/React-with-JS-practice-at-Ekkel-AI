@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import  { useCallback, useEffect } from "react";
 import { useForm, Watch } from "react-hook-form";
 import Button from "../Button";
 import RTE from "../RTE";
 import Input from "../Input";
 import appwriteService from "../../appwrite/config";
+import authService from "../../appwrite/auth";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -31,7 +32,13 @@ const PostForm = ({ post }) => {
   
 const submit = async (data) => {
   try {
-    if (!userData) {
+    let currentUser = userData;
+    if (!currentUser) {
+       const sessionUser = await authService.getCurrentUser();
+       if (sessionUser) currentUser = sessionUser;
+    }
+
+    if (!currentUser) {
       toast.error("User not logged in");
       return;
     }
@@ -60,7 +67,7 @@ const submit = async (data) => {
       content: data.content,
       status: data.status,
       featuredimage: fileId,
-      userId: userData.$id,
+      userId: currentUser.$id,
     };
 
     let response;
@@ -158,7 +165,7 @@ const slugTransform = useCallback((value) => {
           <option value="inactive">Inactive</option>
         </select>
 
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full cursor-pointer">
           {post ? "Update Post" : "Create Post"}
         </Button>
       </form>

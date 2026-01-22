@@ -52,7 +52,7 @@ const EditPostPage = () => {
     document.title = "Edit Post - MegaBlog";
   }, []);
 
-  if (loading) return  <div className="w-full h-80 flex items-center justify-center"><div className="loader"></div></div>;
+  if (loading) return  <div className="w-full min-h-[60vh] flex items-center justify-center"><div className="loader"></div></div>;
   if (!post) return <div className="p-6 text-center mt-18 flex items-center  justify-center h-18 w-full">Post not found.</div>;
 
   return (

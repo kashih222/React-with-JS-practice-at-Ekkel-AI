@@ -21,7 +21,7 @@ const Input = forwardRef(
     return (
       <div className="w-full">
         {label && (
-          <label className="mb-1 block text-sm font-medium text-gray-700">
+          <label className="mb-1 block text-sm font-medium  text-gray-700">
             {label}
           </label>
         )}
@@ -31,7 +31,7 @@ const Input = forwardRef(
             ref={ref}
             type={isPassword && showPassword ? "text" : type}
             placeholder={placeholder}
-            className={`w-full rounded-md border px-3 py-2 outline-none transition
+            className={`w-full rounded-md bg-white border px-3 py-2 outline-none transition
               ${
                 error
                   ? "border-red-500 focus:ring-red-400"

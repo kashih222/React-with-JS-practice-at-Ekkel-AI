@@ -59,9 +59,11 @@ const PostPage = () => {
 
   if (!post) {
     return (
-      <div className="p-6 text-center mt-18 flex items-center  justify-center h-80 w-full">
+      <div className="w-full min-h-[60vh] flex items-center justify-center">
         <Container>
-          <div className="loader"></div>
+          <div className="flex justify-center w-full">
+             <div className="loader"></div>
+          </div>
         </Container>
       </div>
     );
@@ -79,6 +81,7 @@ const PostPage = () => {
             <img
               src={imageUrl}
               alt={post.tittle}
+              loading="lazy"
               className="rounded-xl max-h-125 object-cover"
             />
           )}
@@ -86,12 +89,12 @@ const PostPage = () => {
           {isAuthor && (
             <div className="absolute right-6 top-6 flex space-x-3">
               <Link to={`/edit-post/${post.slug}`}>
-                <Button bgColor="bg-green-500" className="">
+                <Button bgColor="bg-green-500" className="cursor-pointer">
                   Edit
                 </Button>
               </Link>
 
-              <Button bgColor="bg-red-500" onClick={() => setShowConfirm(true)}>
+              <Button bgColor="bg-red-500" className="cursor-pointer" onClick={() => setShowConfirm(true)}>
                 Delete
               </Button>
             </div>

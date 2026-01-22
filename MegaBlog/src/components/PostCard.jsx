@@ -30,6 +30,7 @@ useEffect(() => {
           <img
             src={imageUrl}
             alt={tittle}
+            loading="lazy"
             className="w-full h-48 object-cover"
           />
         )}

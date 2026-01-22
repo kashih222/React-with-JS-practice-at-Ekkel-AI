@@ -40,7 +40,7 @@ const Signup = () => {
 
         if (session) {
           const user = await authService.getCurrentUser();
-          dispatch(loginAction(user));
+          if (user) dispatch(loginAction({ userData: user }));
           toast.success("SignUp Sucessfully.");
           navigate("/");
         }

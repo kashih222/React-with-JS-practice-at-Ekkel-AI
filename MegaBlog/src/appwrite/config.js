@@ -152,10 +152,24 @@ export class Service {
   getFilePreview(fileId) {
     try {
       if (!fileId) return null;
-      const url = this.bucket.getFileView(conf.appwriteBucketId, fileId);
+      const url = this.bucket.getFileView(
+        conf.appwriteBucketId,
+        fileId
+      );
       return url.toString();
     } catch (error) {
       console.error("Appwrite service :: getFilePreview :: error", error);
+      return null;
+    }
+  }
+
+  getFileView(fileId) {
+    try {
+      if (!fileId) return null;
+      const url = this.bucket.getFileView(conf.appwriteBucketId, fileId);
+      return url.toString();
+    } catch (error) {
+      console.error("Appwrite service :: getFileView :: error", error);
       return null;
     }
   }

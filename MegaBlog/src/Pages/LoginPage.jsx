@@ -18,7 +18,7 @@ const LoginPage = () => {
     try {
       await AuthService.login({ email, password })
       const userData = await AuthService.getCurrentUser()
-      dispatch(login(userData))
+      dispatch(login({ userData }))
       navigate("/")
     } catch (err) {
       setError(err.message || "Login failed")
