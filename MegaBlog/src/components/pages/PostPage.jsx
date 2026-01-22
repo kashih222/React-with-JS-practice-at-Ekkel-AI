@@ -104,7 +104,7 @@ const PostPage = () => {
         <h1 className="text-3xl font-bold mb-4 text-center">{post.tittle}</h1>
 
         <p className="text-center text-gray-500 text-sm mb-4">
-          Posted on: {new Date(post.$createdAt).toLocaleString()}
+          Posted on: {new Date(post.$createdAt).toLocaleString()} {post.author ? `by ${post.author}` : ""}
         </p>
 
         <div

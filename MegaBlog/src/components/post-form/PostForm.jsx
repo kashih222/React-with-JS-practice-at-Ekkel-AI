@@ -138,6 +138,12 @@ const slugTransform = useCallback((value) => {
         />
 
         <Input
+          label="Author"
+          placeholder="Enter author name"
+          {...register("author", { required: true })}
+        />
+
+        <Input
           label="Slug"
           placeholder="post-slug"
           {...register("slug", { required: true })}

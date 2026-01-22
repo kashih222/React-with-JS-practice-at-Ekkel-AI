@@ -8,6 +8,7 @@ const PostCard = ({
   content,
   $createdAt,
   slug,
+  author,
 }) => {
   const [imageUrl, setImageUrl] = useState("");
 
@@ -47,6 +48,7 @@ useEffect(() => {
             <span>
               {$createdAt ? new Date($createdAt).toLocaleString() : ""}
             </span>
+            <span>{author ? `By ${author}` : ""}</span>
           </div>
 
           <span className="inline-block mt-4 text-orange-700 font-medium hover:underline">
