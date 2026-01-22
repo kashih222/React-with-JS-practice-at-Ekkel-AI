@@ -85,6 +85,11 @@ const router = createBrowserRouter([
   },
 ]);
 
+const loader = document.getElementById("initial-loader");
+if (loader) {
+  loader.remove();
+}
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>

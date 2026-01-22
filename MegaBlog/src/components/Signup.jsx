@@ -13,13 +13,13 @@ const Signup = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
- const {
-  register,
-  handleSubmit,
-  formState: { errors, isSubmitting, isValid, touchedFields },
-} = useForm({
-  mode: "onChange",
-});
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid, touchedFields },
+  } = useForm({
+    mode: "onChange",
+  });
 
   const onCreate = async (data) => {
     setError("");
@@ -82,7 +82,7 @@ const Signup = () => {
               },
             })}
             error={errors.name?.message}
-  isValid={touchedFields.name && !errors.name}
+            isValid={touchedFields.name && !errors.name}
           />
 
           {/* Email */}
@@ -98,8 +98,8 @@ const Signup = () => {
                 message: "Please enter a valid email address",
               },
             })}
-              error={errors.email?.message}
-  isValid={touchedFields.email && !errors.email}
+            error={errors.email?.message}
+            isValid={touchedFields.email && !errors.email}
           />
 
           {/* Password */}
@@ -126,7 +126,7 @@ const Signup = () => {
               },
             })}
             error={errors.password?.message}
-  isValid={touchedFields.password && !errors.password}
+            isValid={touchedFields.password && !errors.password}
           />
 
           {/* Confirm Password */}
@@ -140,8 +140,8 @@ const Signup = () => {
               validate: (value, formValues) =>
                 value === formValues.password || "Passwords do not match",
             })}
-             error={errors.confirmPassword?.message}
-  isValid={touchedFields.confirmPassword && !errors.confirmPassword}
+            error={errors.confirmPassword?.message}
+            isValid={touchedFields.confirmPassword && !errors.confirmPassword}
           />
 
           {/* Submit Button */}
