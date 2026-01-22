@@ -17,6 +17,7 @@ useEffect(() => {
     if (!featuredimage) return;
 
     const url = appwriteService.getFilePreview(featuredimage);
+    // console.log("PostCard imageUrl:", url);
     setImageUrl(url);
   };
 
@@ -33,11 +34,15 @@ useEffect(() => {
             alt={tittle}
             loading="lazy"
             className="w-full h-48 object-cover"
+            onError={(e) => {
+              console.error("Image failed to load:", imageUrl);
+              e.target.style.display = 'none'; 
+            }}
           />
         )}
 
         <div className="p-4">
-          <h2 className="text-xl font-semibold mb-2">{tittle}</h2>
+          <h2 className="text-xl w-full h-12 overflow-hidden font-semibold mb-2">{tittle}</h2>
 
           <div
             className="text-gray-700 mb-4 w-full h-18 overflow-hidden prose max-w-none line-clamp-3"

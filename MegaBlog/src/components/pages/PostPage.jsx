@@ -83,6 +83,10 @@ const PostPage = () => {
               alt={post.tittle}
               loading="lazy"
               className="rounded-xl max-h-125 object-cover"
+              onError={(e) => {
+                 console.error("Image failed to load in PostPage:", imageUrl);
+                 e.target.style.display = 'none';
+              }}
             />
           )}
 

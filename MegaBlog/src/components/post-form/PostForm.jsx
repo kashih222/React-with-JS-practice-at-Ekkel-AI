@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 const PostForm = ({ post }) => {
+  const userData = useSelector((state) => state.auth.userData);
   const {
     register,
     handleSubmit,
@@ -23,12 +24,11 @@ const PostForm = ({ post }) => {
       slug: post?.slug || "",
       content: post?.content || "",
       status: post?.status || "active",
-      author: post?.author || "",
+      author: post?.author || userData?.name || "",
     },
   });
 
   const navigate = useNavigate();
-  const userData = useSelector((state) => state.auth.userData);
 
   
 const submit = async (data) => {

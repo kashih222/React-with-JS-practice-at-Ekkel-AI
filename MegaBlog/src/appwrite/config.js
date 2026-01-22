@@ -1,5 +1,5 @@
 import conf from "../conf/conf";
-import { ID, Databases, Storage, Query, Client } from "appwrite";
+import { ID, Databases, Storage, Query, Client, Permission, Role } from "appwrite";
 
 export class Service {
   client;
@@ -117,7 +117,10 @@ export class Service {
       const res = await this.databases.listDocuments(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
-        [Query.equal("userId", userId)],
+        [
+            Query.equal("userId", userId),
+            Query.orderDesc("$createdAt")
+        ],
       );
       return res.documents || [];
     } catch (error) {
@@ -130,11 +133,18 @@ export class Service {
 
   async uploadFile(file) {
     try {
-      return await this.bucket.createFile(
-        conf.appwriteBucketId,
-        ID.unique(),
-        file,
-      );
+       const permissions = [
+           Permission.read(Role.any()),
+           Permission.read(Role.users()),
+       ];
+       console.log("Appwrite service :: uploadFile :: permissions", permissions);
+
+       return await this.bucket.createFile(
+         conf.appwriteBucketId,
+         ID.unique(),
+         file,
+         permissions
+       );
     } catch (error) {
       console.error("Appwrite service :: uploadFile :: error", error);
       return null;

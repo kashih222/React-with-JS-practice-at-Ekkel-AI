@@ -3,7 +3,6 @@ import appwriteService from "../../appwrite/config";
 import Container from "../container/Container";
 import PostCard from "../PostCard";
 import MEGABLOG from "../../assets/Mega.png";
-
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
