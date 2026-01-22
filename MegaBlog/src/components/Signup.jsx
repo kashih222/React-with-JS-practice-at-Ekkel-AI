@@ -73,8 +73,8 @@ const Signup = () => {
             {...register("name", {
               required: "Name is required",
               minLength: {
-                value: 3,
-                message: "Name must be at least 3 characters",
+                value: 4,
+                message: "Name must be at least 4 characters",
               },
             })}
             error={errors.name?.message}
@@ -86,12 +86,12 @@ const Signup = () => {
             type="email"
             placeholder="Enter your email"
             {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^\S+@\S+$/i,
-                message: "Enter a valid email",
-              },
-            })}
+  required: "Email is required",
+  pattern: {
+    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    message: "Please enter a valid email address",
+  },
+})}
             error={errors.email?.message}
           />
 
@@ -102,12 +102,21 @@ const Signup = () => {
             type="password"
             placeholder="Enter your password"
             {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters",
-              },
-            })}
+  required: "Password is required",
+  minLength: {
+    value: 8,
+    message: "Password must be at least 8 characters",
+  },
+  maxLength: {
+    value: 20,
+    message: "Password must not exceed 20 characters",
+  },
+  pattern: {
+    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/,
+    message:
+      "Password must contain uppercase, lowercase, number & special character",
+  },
+})}
             error={errors.password?.message}
           />
 
@@ -118,10 +127,10 @@ const Signup = () => {
             type="password"
             placeholder="Confirm your password"
             {...register("confirmPassword", {
-              required: "Confirm password is required",
-              validate: (value, formValues) =>
-                value === formValues.password || "Passwords do not match",
-            })}
+  required: "Confirm password is required",
+  validate: (value, formValues) =>
+    value === formValues.password || "Passwords do not match",
+})}
             error={errors.confirmPassword?.message}
           />
 

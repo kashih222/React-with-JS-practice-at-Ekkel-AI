@@ -3,33 +3,43 @@ import React, { forwardRef } from "react";
 const Input = forwardRef(
   (
     {
+      label,
       type = "text",
       placeholder = "",
-      value,
-      onChange,
-      name,
-      id,
+      error,
       className = "",
-      disabled = false,
-      required = false,
       ...rest
     },
     ref
   ) => {
     return (
-      <input
-        ref={ref}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        name={name}
-        id={id}
-        disabled={disabled}
-        required={required}
-        className={`border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
-        {...rest}
-      />
+      <div className="w-full">
+        {label && (
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            {label}
+          </label>
+        )}
+
+        <input
+          ref={ref}
+          type={type}
+          placeholder={placeholder}
+          className={`w-full rounded-md border px-3 py-2 outline-none transition
+            ${
+              error
+                ? "border-red-500 focus:ring-red-400"
+                : "border-gray-300 focus:ring-blue-400"
+            }
+            focus:ring-2 ${className}`}
+          {...rest}
+        />
+
+        {error && (
+          <p className="mt-1 text-sm text-red-500">
+            {error}
+          </p>
+        )}
+      </div>
     );
   }
 );
