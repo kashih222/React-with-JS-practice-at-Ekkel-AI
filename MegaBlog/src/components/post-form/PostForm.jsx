@@ -1,21 +1,32 @@
 import { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import Button from "../Button";
 import RTE from "../RTE";
 import Input from "../Input";
-import appwriteService from "../../appwrite/config";
-import authService from "../../appwrite/auth";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import {
+  useCreatePostMutation,
+  useUpdatePostMutation,
+  useUploadFileMutation,
+  useDeleteFileMutation,
+} from "../../store/features/postsApiSlice"; 
+import LoadingSpinner from "../LoadingSpinner";
 
 const PostForm = ({ post }) => {
   const [loading, setLoading] = useState(false);
   const userData = useSelector((state) => state.auth.userData);
+  
+  const [createPost, { isLoading: isCreating }] = useCreatePostMutation();
+  const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation();
+  const [uploadFile] = useUploadFileMutation();
+  const [deleteFile] = useDeleteFileMutation();
+
   const {
     register,
     handleSubmit,
-    watch,
+    
     setValue,
     control,
     getValues,
@@ -38,11 +49,6 @@ const PostForm = ({ post }) => {
     try {
       let currentUser = userData;
       if (!currentUser) {
-        const sessionUser = await authService.getCurrentUser();
-        if (sessionUser) currentUser = sessionUser;
-      }
-
-      if (!currentUser) {
         toast.error("Please login to create or update posts");
         setLoading(false);
         return;
@@ -53,21 +59,29 @@ const PostForm = ({ post }) => {
       // Handle image upload if a new image is provided
       if (data.image && data.image[0]) {
         toast.loading("Uploading image...", { id: "image-upload" });
-        const uploadedFile = await appwriteService.uploadFile(data.image[0]);
+        
+        try {
+          const uploadedFile = await uploadFile(data.image[0]).unwrap();
+          
+          if (!uploadedFile || !uploadedFile.$id) {
+            toast.error("Image upload failed", { id: "image-upload" });
+            setLoading(false);
+            return;
+          }
 
-        if (!uploadedFile || !uploadedFile.$id) {
+          // Delete old image if updating
+          if (post?.featuredimage) {
+            await deleteFile(post.featuredimage).unwrap();
+          }
+
+          fileId = uploadedFile.$id;
+          toast.success("Image uploaded successfully", { id: "image-upload" });
+        } catch (error) {
           toast.error("Image upload failed", { id: "image-upload" });
+          console.log(error)
           setLoading(false);
           return;
         }
-
-        // Delete old image if updating
-        if (post?.featuredimage) {
-          await appwriteService.deleteFile(post.featuredimage);
-        }
-
-        fileId = uploadedFile.$id;
-        toast.success("Image uploaded successfully", { id: "image-upload" });
       }
 
       const postData = {
@@ -85,8 +99,18 @@ const PostForm = ({ post }) => {
       if (post) {
         // UPDATE POST
         toast.loading("Updating post...", { id: "post-update" });
-        response = await appwriteService.updatePost(post.$id, postData);
-        toast.success("Post updated successfully", { id: "post-update" });
+        try {
+          response = await updatePost({ 
+            postId: post.$id, 
+            postData 
+          }).unwrap();
+          toast.success("Post updated successfully", { id: "post-update" });
+        } catch (error) {
+          toast.error("Failed to update post", { id: "post-update" });
+          console.log(error)
+          setLoading(false);
+          return;
+        }
       } else {
         // CREATE POST
         if (!fileId) {
@@ -96,8 +120,15 @@ const PostForm = ({ post }) => {
         }
 
         toast.loading("Creating post...", { id: "post-create" });
-        response = await appwriteService.createPost(postData);
-        toast.success("Post created successfully", { id: "post-create" });
+        try {
+          response = await createPost(postData).unwrap();
+          toast.success("Post created successfully", { id: "post-create" });
+        } catch (error) {
+          toast.error("Failed to create post", { id: "post-create" });
+          console.log(error)
+          setLoading(false);
+          return;
+        }
       }
 
       if (response && response.slug) {
@@ -112,7 +143,7 @@ const PostForm = ({ post }) => {
 
     } catch (error) {
       console.error("Post submit error:", error);
-      toast.error(`Failed to ${post ? "update" : "create"} post: ${error.message || "Unknown error"}`);
+      toast.error(`Failed to ${post ? "update" : "create"} post`);
       setLoading(false);
     }
   };
@@ -128,41 +159,15 @@ const PostForm = ({ post }) => {
     return "";
   }, []);
 
+  const title = useWatch({ control, name: "tittle" });
+
   useEffect(() => {
-    const subscription = watch((value, { name }) => {
-      if (name === "tittle") {
-        setValue("slug", slugTransform(value.tittle), {
-          shouldValidate: true,
-        });
-      }
-    });
+    const slug = slugTransform(title);
+    setValue("slug", slug, { shouldValidate: true });
+  }, [title, slugTransform, setValue]);
 
-    return () => subscription.unsubscribe();
-  }, [watch, slugTransform, setValue]);
-
-  // Loading spinner component
-  const LoadingSpinner = () => (
-    <svg 
-      className="animate-spin h-5 w-5 text-white" 
-      xmlns="http://www.w3.org/2000/svg" 
-      fill="none" 
-      viewBox="0 0 24 24"
-    >
-      <circle 
-        className="opacity-25" 
-        cx="12" 
-        cy="12" 
-        r="10" 
-        stroke="currentColor" 
-        strokeWidth="4"
-      ></circle>
-      <path 
-        className="opacity-75" 
-        fill="currentColor" 
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      ></path>
-    </svg>
-  );
+  // Combine loading states
+  const isLoading = loading || isCreating || isUpdating;
 
   return (
     <div className="w-full py-8">
@@ -247,12 +252,12 @@ const PostForm = ({ post }) => {
 
         <Button 
           type="submit" 
-          className={`w-full cursor-pointer flex items-center justify-center gap-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-          disabled={loading}
+          className={`w-full cursor-pointer flex items-center justify-center gap-2 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+          disabled={isLoading}
         >
-          {loading ? (
+          {isLoading ? (
             <>
-              <LoadingSpinner />
+              <LoadingSpinner/>
               {post ? "Updating Post..." : "Creating Post..."}
             </>
           ) : (

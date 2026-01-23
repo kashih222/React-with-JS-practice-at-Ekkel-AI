@@ -1,28 +1,12 @@
-import React, { useEffect, useState } from "react";
-import appwriteService from "../../appwrite/config";
+import React, { useEffect } from "react";
+import { useGetPostsQuery } from "../../store/features/postsApiSlice";
 import Container from "../container/Container";
 import PostCard from "../PostCard";
 import MEGABLOG from "../../assets/Mega.png";
+
 const HomePage = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await appwriteService.getPosts();
-        if (response && response.documents) {
-          setPosts(response.documents);
-        }
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
+  const { data: response, isLoading: loading } = useGetPostsQuery();
+  const posts = response?.documents || [];
 
   useEffect(() => {
     document.title = "Home - MegaBlog";

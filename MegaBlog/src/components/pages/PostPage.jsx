@@ -5,37 +5,30 @@ import Container from "../container/Container";
 import Button from "../Button";
 import appwriteService from "../../appwrite/config";
 import toast from "react-hot-toast";
+import { useGetPostQuery, useDeletePostMutation, useDeleteFileMutation } from "../../store/features/postsApiSlice";
 
 const PostPage = () => {
-  const [post, setPost] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const { slug } = useParams();
   const navigate = useNavigate();
 
   const userData = useSelector((state) => state.auth.userData);
-  const authStatus = useSelector((state) => state.auth.status);
+
+  const { data: post, isLoading: loading } = useGetPostQuery(slug, {
+      skip: !slug,
+  });
+
+  const [deletePostMutation] = useDeletePostMutation();
+  const [deleteFileMutation] = useDeleteFileMutation();
 
   const isAuthor = post && userData ? post.userId === userData.$id : false;
 
   useEffect(() => {
-    if (!slug || !authStatus || !userData) return;
-
-    const fetchPost = async () => {
-      try {
-        const fetchedPost = await appwriteService.getPostBySlug(slug);
-        if (fetchedPost) {
-          setPost(fetchedPost);
-        } else {
-          navigate("/");
-        }
-      } catch (err) {
-        console.error("Error fetching post:", err);
+    if (!slug) return;
+    if (!loading && !post) {
         navigate("/");
-      }
-    };
-
-    fetchPost();
-  }, [slug, userData, authStatus, navigate]);
+    }
+  }, [slug, post, loading, navigate]);
 
   useEffect(() => {
     document.title = post ? `${post.tittle} - MegaBlog` : "Post - MegaBlog";
@@ -43,10 +36,10 @@ const PostPage = () => {
 
   const deletePost = async () => {
     try {
-      await appwriteService.deletePost(post.$id);
+      await deletePostMutation(post.$id).unwrap();
 
       if (post.featuredimage) {
-        await appwriteService.deleteFile(post.featuredimage);
+        await deleteFileMutation(post.featuredimage).unwrap();
       }
 
       toast.success("Post deleted successfully!");
@@ -57,7 +50,7 @@ const PostPage = () => {
     }
   };
 
-  if (!post) {
+  if (loading || !post) {
     return (
       <div className="w-full min-h-[60vh] flex items-center justify-center">
         <Container>

@@ -72,18 +72,26 @@ export class Service {
     }
   }
 
-  async getPost(id) {
-    try {
+ // Change the getPost method to also accept slug
+async getPost(identifier) {
+  try {
+    // Check if identifier is a slug (contains hyphens) or an ID
+    if (identifier && identifier.includes('-')) {
+      // It's likely a slug, use getPostBySlug
+      return await this.getPostBySlug(identifier);
+    } else {
+      // It's an ID, use getDocument
       return await this.databases.getDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
-        id,
+        identifier,
       );
-    } catch (error) {
-      console.error("Appwrite service :: getPost :: error", error);
-      return null;
     }
+  } catch (error) {
+    console.error("Appwrite service :: getPost :: error", error);
+    return null;
   }
+}
 
   async getPostBySlug(slug) {
     try {

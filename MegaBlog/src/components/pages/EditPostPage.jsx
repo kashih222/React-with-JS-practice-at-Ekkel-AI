@@ -1,52 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Container from "../container/Container";
 import PostForm from "../post-form/PostForm";
-import appwriteService from "../../appwrite/config";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { useGetPostQuery } from "../../store/features/postsApiSlice";
 
 const EditPostPage = () => {
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
   const { slug } = useParams();
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
 
+  const { data: post, isLoading: loading, isError } = useGetPostQuery(slug, {
+    skip: !slug,
+  });
+
   useEffect(() => {
-    const fetchPost = async () => {
-      if (!slug) {
+    if (!slug) {
+      navigate("/");
+      return;
+    }
+
+    if (!loading && !post && isError) {
+       toast.error("Post not found");
+       navigate("/");
+       return;
+    }
+
+    if (!loading && post && userData && post.userId !== userData.$id) {
+        toast.error("You are not authorized to edit this post");
         navigate("/");
-        return;
-      }
+    }
 
-      try {
-        const fetchedPost = await appwriteService.getPostBySlug(slug);
-
-        if (!fetchedPost) {
-          toast.error("Post not found");
-          navigate("/");
-          return;
-        }
-
-        if (fetchedPost.userId !== userData?.$id) {
-          toast.error("You are not authorized to edit this post");
-          navigate("/");
-          return;
-        }
-
-        setPost(fetchedPost);
-      } catch (err) {
-        console.error("Error fetching post:", err);
-        toast.error("Failed to fetch post");
-        navigate("/");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (userData) fetchPost();
-  }, [slug, navigate, userData]);
+  }, [slug, navigate, userData, post, loading, isError]);
 
   useEffect(() => {
     document.title = "Edit Post - MegaBlog";

@@ -1,36 +1,26 @@
-import { useState, useEffect } from "react";
-import appwriteService from "../../appwrite/config";
+import { useEffect } from "react";
 import PostCard from "../PostCard";
 import Container from "../container/Container";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { useGetPostsByUserQuery } from "../../store/features/postsApiSlice";
 
 const MyPostPage = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const userData = useSelector((state) => state.auth.userData);
+  
+  const { data: posts = [], isLoading: loading, isError, error } = useGetPostsByUserQuery(userData?.$id, {
+    skip: !userData,
+  });
 
   useEffect(() => {
     document.title = "My Post - MegaBlog";
   }, []);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
-      try {
-        if (userData) {
-            const userPosts = await appwriteService.getPostsByUser(userData.$id);
-            setPosts(userPosts);
-        }
-      } catch (error) {
-        toast.error("Error fetching posts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, [userData]);
+    if (isError) {
+      toast.error("Error fetching posts: " + (error?.data || error?.message || "Unknown error"));
+    }
+  }, [isError, error]);
 
   if (loading) {
     return (

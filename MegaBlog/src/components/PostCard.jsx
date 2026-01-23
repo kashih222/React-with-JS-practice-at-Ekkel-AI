@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import appwriteService from "../appwrite/config";
 
@@ -10,19 +10,9 @@ const PostCard = ({
   slug,
   author,
 }) => {
-  const [imageUrl, setImageUrl] = useState("");
-
-useEffect(() => {
-  const loadImage = () => {
-    if (!featuredimage) return;
-
-    const url = appwriteService.getFilePreview(featuredimage);
-    // console.log("PostCard imageUrl:", url);
-    setImageUrl(url);
-  };
-
-  loadImage();
-}, [featuredimage]);
+  const imageUrl = featuredimage 
+    ? appwriteService.getFilePreview(featuredimage) 
+    : null;
 
   return (
     <Link to={`/post/${slug}`}>
